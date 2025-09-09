@@ -1,3 +1,92 @@
 @import '@digi/arbetsformedlingen/dist/digi-arbetsformedlingen/digi-arbetsformedlingen.css';
 @import '@digi/arbetsformedlingen/dist/digi-arbetsformedlingen/fonts/src/fonts.css';
 
+:root {
+  /** Profile Colors **/
+
+  /* Ocean (overrides stratos) */
+  --color-ocean-800: #1B4B5A; /* stratos-600 */
+  --color-ocean-600: #2A6B7A; /* stratos-500 */
+  --color-ocean-400: #4A8B9A; /* stratos-400 */
+  --color-ocean-200: #8BBBC7; /* stratos-100 */
+
+  /** Cedar (overrides leaf) **/
+
+  --color-cedar-800: #7A4F2F; /* leaf-600 */
+  --color-cedar-600: #9B6B3F; /* leaf-500 */
+  --color-cedar-400: #BC875F; /* leaf-400 */
+  --color-cedar-200: #DDB189; /* leaf-200 */ --color-cedar-100: #E5C199;
+  /* leaf-100 */
+
+  /** Complementary Colors **/
+
+  /*- Peach (overrides water) */
+  --color-peach-700: #CC7A4F; /* water-700 */
+  --color-peach-300: #F5D6C3; /* water-500 */
+  --color-peach-100: #FDF0E8; /* water-200 */
+
+  /* Lavender (overrides rose) */
+  --color-lavender-900: #4A2F5A;
+  --color-lavender-700: #6B3F7A;
+  --color-lavender-600: #8B5F9A;
+  --color-lavender-500: #9F69C7;
+  --color-lavender-400: #B896D4;
+  --color-lavender-300: #D6C3E6;
+  --color-lavender-200: #F0E8F5;
+  --color-lavender-100: #F8F2FB;
+
+  /* Sage (overrides jade) */
+  --color-sage-900: #2F3D2A;
+  --color-sage-700: #3F4F3A;
+  --color-sage-600: #5F654A;
+  --color-sage-500: #65875F;
+  --color-sage-400: #7A9B74;
+  --color-sage-300: #99C199;
+  --color-sage-200: #BFD6BF;
+  --color-sage-100: #E5F0E5;
+
+
+  /** Design-system Color overrides **/
+
+  /* Ocean (overrides stratos/profile-blue) */
+  --digi--global--color--profile--blue--dark: var(--color-ocean-800);
+  --digi--global--color--profile--blue--base: var(--color-ocean-600);
+  --digi--global--color--profile--blue--light: var(--color-ocean-400);
+  --digi--global--color--profile--blue--lighter: var(--color-ocean-200);
+
+  /* Cedar (overrides leaf/profile-green) */
+  --digi--global--color--profile--green--dark: var(--color-cedar-800);
+  --digi--global--color--profile--green--base: var(--color-cedar-600);
+  --digi--global--color--profile--green--light: var(--color-cedar-400);
+  --digi--global--color--profile--green--lighter: var(--color-cedar-200);
+  --digi--global--color--profile--green--lightest: var(--color-cedar-100);
+
+  /* Peach (overrides water/cta-blue) */
+  --digi--global--color--cta--blue--darker: var(--color-peach-700);
+  --digi--global--color--cta--blue--dark: var(--color-peach-300);
+  --digi--global--color--cta--blue--base: var(--color-peach-100);
+
+  /* Lavender (overrides rose/cerise) */
+  --digi--global--color--complementary--cerise--darkest: var(--color-lavender-900);
+  --digi--global--color--complementary--cerise--darker: var(--color-lavender-700);
+  --digi--global--color--complementary--cerise--dark: var(--color-lavender-600);
+  --digi--global--color--complementary--cerise--base: var(--color-lavender-500);
+  --digi--global--color--complementary--cerise--light: var(--color-lavender-400);
+  --digi--global--color--complementary--cerise--lighter: var(--color-lavender-300);
+  --digi--global--color--complementary--cerise--lightest: var(--color-lavender-200);
+  --digi--global--color--complementary--cerise--lightest-2: var(--color-lavender-100);
+
+  /* Sage (overrides jade/turquoise) */
+  --digi--global--color--complementary--turqouise--darkest: var(--color-sage-900);
+  --digi--global--color--complementary--turqouise--darker: var(--color-sage-700);
+  --digi--global--color--complementary--turqouise--dark: var(--color-sage-600);
+  --digi--global--color--complementary--turqouise--base: var(--color-sage-500);
+  --digi--global--color--complementary--turqouise--light: var(--color-sage-400);
+  --digi--global--color--complementary--turqouise--lighter: var(--color-sage-300);
+  --digi--global--color--complementary--turqouise--lightest: var(--color-sage-200);
+  --digi--global--color--complementary--turqouise--lightest-2: var(--color-sage-100);
+}
+
+body {
+  margin: 0;
+}
