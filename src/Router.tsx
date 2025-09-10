@@ -3,6 +3,8 @@ import { Layout } from "./pages/layout/Layout";
 import { JobSearch } from "./pages/JobSearch";
 import { JobDetails } from "./pages/JobDetails";
 
+// Add loaders
+
 export const appRouter = createBrowserRouter([
   {
     path: '/',
