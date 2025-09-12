@@ -12,9 +12,10 @@ const StyledJobCardCntainer = styled(DigiLayoutContainer)`
 `;
 
 const StyledJobCard = styled(DigiInfoCardMulti)`
+  display: block;
+  width: 100%;
   box-shadow: 0 0.25rem .75rem rgba(0,0,0, 0.25);
-  /* margin-block-end: var(--digi--margin-medium); */
-  padding: var(--PADDING);
+  margin-bottom: var(--digi--margin-medium);
 `;
 
 export const JobCard = ({ job }: JobCardProps) => {
