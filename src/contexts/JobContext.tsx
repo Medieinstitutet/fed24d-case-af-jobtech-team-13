@@ -17,7 +17,7 @@ interface JobContextType {
 
 const JobContext = createContext<JobContextType | undefined>(undefined);
 
-export const JobProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const JobProvider = ({ children }: { children: ReactNode }) => {
   const [jobs, setJobs] = useState<JobListItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
