@@ -32,7 +32,6 @@ export const SearchForm = () => {
       
       setJobs(result.hits);
       setTotalResults(result.total);
-      console.log(result.hits);
       
     } catch (err) {
       console.error('Search error:', err);
@@ -52,9 +51,7 @@ export const SearchForm = () => {
           afButtonText="Sök"
           afValue={inputValue}
           onAfOnInput={(e: CustomEvent) => {
-            // The actual input value is in e.detail.target.value
             const value = (e.detail.target as HTMLInputElement)?.value || '';
-            console.log('✅ Input value:', value);
             setInputValue(value);
           }}
           onAfOnClick={() => handleSearch()}
