@@ -1,8 +1,9 @@
-import { DigiLayoutBlock, DigiTypography } from "@digi/arbetsformedlingen-react";
+import { DigiLayoutBlock, DigiLayoutContainer, DigiNavigationPagination, DigiTypography } from "@digi/arbetsformedlingen-react";
 import { transformApiJobToListItem } from "../../api/transformers";
 import type { ApiJobHit } from "../../api/types";
 import { testObject } from "./testObject";
 import { LayoutBlockContainer, LayoutBlockVariation } from "@digi/arbetsformedlingen";
+import { JobCard } from "./JobCard";
 
 export const JobSearchPresentation = () => {
 
@@ -12,19 +13,21 @@ export const JobSearchPresentation = () => {
 
   return (
     <>
-      <DigiLayoutBlock afVariation={LayoutBlockVariation.TRANSPARENT} afContainer={LayoutBlockContainer.NONE}>
-        <h1>Kalle</h1>
-      </DigiLayoutBlock>
       <DigiLayoutBlock afVariation={LayoutBlockVariation.SECONDARY} afContainer={LayoutBlockContainer.STATIC}>
         <DigiTypography>
           
-          <h1>Kalle</h1>
+          <DigiLayoutContainer afNoGutter>
+            {searchData.map((job) => <JobCard job={job} />)}
+            <DigiNavigationPagination
+              afTotalPages={10}
+              afInitActivePage={1}
+            >
 
-
+            </DigiNavigationPagination>
+          </DigiLayoutContainer>
 
         </DigiTypography>
       </DigiLayoutBlock>
-      
     </>
   );
 };
