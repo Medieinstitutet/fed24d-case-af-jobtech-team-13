@@ -7,16 +7,16 @@ export interface JobListItem {
   publicationDate: Date;
   logoUrl?: string;
   deadline?: Date;
+  employmentType?: string;
+  workingHours?: string;
+  occupation?: string;
 }
 
 export interface JobDetail extends JobListItem {
   description: string;
   descriptionFormatted: string;
-  employmentType?: string;
   salary?: string;
   duration?: string;
-  workingHours?: string;
-  occupation?: string;
   country?: string;
   applicationUrl?: string;
 }
