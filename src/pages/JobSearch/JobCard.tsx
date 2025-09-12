@@ -1,4 +1,4 @@
-import { DigiInfoCardMulti, DigiLayoutContainer } from "@digi/arbetsformedlingen-react";
+import { DigiInfoCardMulti } from "@digi/arbetsformedlingen-react";
 import type { JobListItem } from "../../api/jobModels";
 import { InfoCardMultiHeadingLevel, InfoCardMultiType } from "@digi/arbetsformedlingen";
 import styled from "styled-components";
@@ -7,15 +7,11 @@ type JobCardProps = {
   job: JobListItem;
 }
 
-const StyledJobCardCntainer = styled(DigiLayoutContainer)`
-
-`;
-
 const StyledJobCard = styled(DigiInfoCardMulti)`
   display: block;
   width: 100%;
-  box-shadow: 0 0.25rem .75rem rgba(0,0,0, 0.25);
-  margin-bottom: var(--digi--margin-medium);
+  box-shadow: 0 0.125rem .25rem rgba(0,0,0, 0.25);
+  margin-bottom: 0.875rem;
 `;
 
 export const JobCard = ({ job }: JobCardProps) => {
