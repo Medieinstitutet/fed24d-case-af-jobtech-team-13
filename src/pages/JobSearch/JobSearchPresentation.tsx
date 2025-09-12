@@ -17,7 +17,8 @@ export const JobSearchPresentation = () => {
         <DigiTypography>
           
           <DigiLayoutContainer afNoGutter>
-            {searchData.map((job) => <JobCard job={job} />)}
+            {searchData.map((job) => <JobCard key={job.id} job={job} />)}
+            
             <DigiNavigationPagination
               afTotalPages={10}
               afInitActivePage={1}
