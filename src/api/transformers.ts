@@ -11,6 +11,7 @@ export function transformApiJobToListItem(apiJob: ApiJobHit): JobListItem {
     publicationDate: new Date(apiJob.publication_date),
     logoUrl: apiJob.logo_url,
     deadline: apiJob.application_deadline ? new Date(apiJob.application_deadline) : undefined,
+    occupation: apiJob.occupation?.label,
   };
 }
 
@@ -23,7 +24,6 @@ export function transformApiJobToDetail(apiJob: ApiJobHit): JobDetail {
     salary: apiJob.salary_description,
     duration: apiJob.duration?.label,
     workingHours: apiJob.working_hours_type?.label,
-    occupation: apiJob.occupation?.label,
     country: apiJob.workplace_address?.country,
     applicationUrl: apiJob.application_details.url,
   };

@@ -90,3 +90,11 @@
 body {
   margin: 0;
 }
+
+.app-hidden {
+  display: none;
+}
+
+.app-visible {
+  display: block;
+}
