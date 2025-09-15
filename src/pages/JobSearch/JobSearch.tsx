@@ -1,6 +1,6 @@
-import { LayoutBlockVariation } from '@designsystem-se/af';
+import { LayoutBlockVariation } from '@digi/arbetsformedlingen';
 import { SearchSection } from '../../components/SearchSection';
-import { DigiLayoutBlock} from '@designsystem-se/af-react';
+import { DigiLayoutBlock} from '@digi/arbetsformedlingen-react';
 
 export const JobSearch = () => {
   return (

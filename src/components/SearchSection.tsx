@@ -1,5 +1,5 @@
 import { SearchForm } from './SearchForm';
-import { DigiLayoutContainer } from '@designsystem-se/af-react';
+import { DigiLayoutContainer } from '@digi/arbetsformedlingen-react';
 
 export const SearchSection = () => {
   return (
