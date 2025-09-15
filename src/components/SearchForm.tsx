@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useJobs } from '../contexts/JobContext';
 import { jobService } from '../api/jobService';
-import { DigiFormInputSearch} from '@designsystem-se/af-react';
+import { DigiFormInputSearch} from '@digi/arbetsformedlingen-react';
 import { 
   FormInputType,
   FormInputSearchVariation,
-} from '@designsystem-se/af';
+} from '@digi/arbetsformedlingen';
 
 export const SearchForm = () => {
   const { 
@@ -15,7 +15,6 @@ export const SearchForm = () => {
     setLoading, 
     setError, 
     setTotalResults,
-    loading,
   } = useJobs();
 
   const [inputValue, setInputValue] = useState(searchQuery);
@@ -58,12 +57,6 @@ export const SearchForm = () => {
         >
         </DigiFormInputSearch>
       </div>
-
-      {loading && (
-        <div className="loading-alert af-margin-top-2">
-          Söker jobb...
-        </div>
-      )}
     </form>
   );
 };
