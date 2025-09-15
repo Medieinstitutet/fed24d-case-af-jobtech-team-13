@@ -1,41 +1,19 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useContext, useState, type ReactNode } from 'react';
-import type { JobListItem } from '../api/jobModels';
-
-interface JobContextType {
-  jobs: JobListItem[];
-  setJobs: (jobs: JobListItem[]) => void;
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
-  loading: boolean;
-  setLoading: (loading: boolean) => void;
-  error: string | null;
-  setError: (error: string | null) => void;
-  totalResults: number;
-  setTotalResults: (total: number) => void;
+import { createContext, useContext, useReducer, type Dispatch, type ReactNode } from 'react';
+import { initialState, jobReducer, type IJobState, type JobActions } from '../reducers/jobReducer';
+interface IJobContext extends IJobState {
+  dispatch: Dispatch<JobActions>
 }
 
-const JobContext = createContext<JobContextType | undefined>(undefined);
+const JobContext = createContext<IJobContext | undefined>(undefined);
 
 export const JobProvider = ({ children }: { children: ReactNode }) => {
-  const [jobs, setJobs] = useState<JobListItem[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [totalResults, setTotalResults] = useState(0);
+  const [state, dispatch] = useReducer(jobReducer, initialState);
 
   return (
     <JobContext.Provider value={{
-      jobs,
-      setJobs,
-      searchQuery,
-      setSearchQuery,
-      loading,
-      setLoading,
-      error,
-      setError,
-      totalResults,
-      setTotalResults,
+      ...state,
+      dispatch
     }}>
       {children}
     </JobContext.Provider>
