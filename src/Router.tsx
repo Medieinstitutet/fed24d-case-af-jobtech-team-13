@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import { Layout } from "./pages/Layout/Layout";
-import { JobSearch } from "./pages/JobSearch";
+import { JobSearch } from "./pages/JobSearch/JobSearch";
 import { JobDetails } from "./pages/JobDetails";
 import { Home } from "./pages/Home";
 
