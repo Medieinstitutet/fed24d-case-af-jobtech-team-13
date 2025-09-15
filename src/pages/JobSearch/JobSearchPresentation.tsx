@@ -23,7 +23,7 @@ export const JobSearchPresentation = () => {
             Fel: {error}
           </div>
 
-          <div className={`loading-alert af-margin-top-2 ${loading ? 'app-visible' : 'app-hidden'}`}>
+          <div className={`loading-alert ${loading ? 'app-visible' : 'app-hidden'}`}>
             <DigiLoaderSpinner afSize={LoaderSpinnerSize.MEDIUM} afText="Laddar sökresultat" />
           </div>
 

@@ -1,6 +1,6 @@
-import { DigiInfoCardMulti } from "@digi/arbetsformedlingen-react";
+import { DigiInfoCardMulti, DigiTypographyTime } from "@digi/arbetsformedlingen-react";
 import type { JobListItem } from "../../api/jobModels";
-import { InfoCardMultiHeadingLevel, InfoCardMultiType } from "@digi/arbetsformedlingen";
+import { InfoCardMultiHeadingLevel, InfoCardMultiType, TypographyTimeVariation } from "@digi/arbetsformedlingen";
 import styled from "styled-components";
 
 type JobCardProps = {
@@ -23,7 +23,16 @@ export const JobCard = ({ job }: JobCardProps) => {
       afLinkHref={`jobsearch/${job.id}`}
     >
       <strong>{job.employer}{job.city != 'Unknown' ? ` - ${job.city}` : ''}</strong>
-      <p></p>
+      <p className="af-margin-top-2">
+        <span>{job.occupation}</span><br/>
+        <span>
+          Publicerad 
+          <DigiTypographyTime 
+            afVariation={TypographyTimeVariation.DISTANCE} 
+            afDateTime={job.publicationDate}>
+          </DigiTypographyTime>
+        </span>
+      </p>
     </StyledJobCard>
   );
 };
