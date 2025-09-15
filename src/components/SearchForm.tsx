@@ -15,7 +15,6 @@ export const SearchForm = () => {
     setLoading, 
     setError, 
     setTotalResults,
-    loading,
   } = useJobs();
 
   const [inputValue, setInputValue] = useState(searchQuery);
@@ -58,12 +57,6 @@ export const SearchForm = () => {
         >
         </DigiFormInputSearch>
       </div>
-
-      {loading && (
-        <div className="loading-alert">
-          Söker jobb...
-        </div>
-      )}
     </form>
   );
 };
