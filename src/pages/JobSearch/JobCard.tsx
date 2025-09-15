@@ -20,7 +20,7 @@ export const JobCard = ({ job }: JobCardProps) => {
       afType={InfoCardMultiType.ENTRY} 
       afHeadingLevel={InfoCardMultiHeadingLevel.H3} 
       afHeading={job.title}
-      afLinkHref={`jobdetails/${job.id}`}
+      afLinkHref={`jobsearch/${job.id}`}
     >
       <strong>{job.employer}{job.city != 'Unknown' ? ` - ${job.city}` : ''}</strong>
       <p></p>
