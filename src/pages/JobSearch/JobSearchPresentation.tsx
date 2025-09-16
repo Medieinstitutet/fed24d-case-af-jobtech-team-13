@@ -1,10 +1,85 @@
+import React, { useCallback } from 'react';
 import { DigiLayoutBlock, DigiLayoutContainer, DigiLoaderSpinner, DigiNavigationPagination, DigiTypography } from "@digi/arbetsformedlingen-react";
 import { LayoutBlockContainer, LayoutBlockVariation, LoaderSpinnerSize } from "@digi/arbetsformedlingen";
 import { JobCard } from "./JobCard";
 import { useJobs } from "../../contexts/JobContext";
+import { JobActionTypes } from "../../reducers/jobReducer";
+import { jobService } from "../../api/jobService";
 
 export const JobSearchPresentation = () => {
-  const { jobs, totalResults, loading, error } = useJobs();
+  const { jobs, totalResults, loading, error, currentPage, jobsPerPage, searchQuery, dispatch } = useJobs();
+
+  // Calculate total pages
+  const totalPages = Math.ceil(Math.min(totalResults, 2000) / jobsPerPage);
+
+  // Function to perform search with pagination
+  const performPaginatedSearch = useCallback(async (page: number) => {
+    if (!page || typeof page !== 'number' || page < 1) {
+      console.error('Invalid page number for pagination:', page);
+      return;
+    }
+
+    const offset = (page - 1) * jobsPerPage;
+    
+    // Start pagination search
+    dispatch({
+      type: JobActionTypes.SEARCH_START_PAGINATION,
+      payload: ""
+    });
+
+    // Set the page immediately 
+    dispatch({
+      type: JobActionTypes.SET_PAGE,
+      payload: page.toString()
+    });
+
+    try {
+      const result = await jobService.searchJobs({ 
+        q: searchQuery,
+        offset: offset,
+        limit: jobsPerPage
+      });
+
+      dispatch({
+        type: JobActionTypes.SEARCH_SUCCESS,
+        payload: JSON.stringify({
+          jobs: result.hits,
+          total: result.total
+        })
+      });
+    } catch (err) {
+      console.error('Pagination search error:', err);
+      dispatch({
+        type: JobActionTypes.SEARCH_ERROR,
+        payload: 'Något gick fel vid sidnavigering. Försök igen.'
+      });
+    }
+  }, [dispatch, jobsPerPage, searchQuery]);
+
+  // Handle page change
+  const handlePageChange = useCallback((event: CustomEvent) => {
+    const newPage = event.detail;
+    
+    if (newPage && newPage > 0) {
+      performPaginatedSearch(newPage);
+    } else {
+      console.error('Invalid page number:', newPage);
+    }
+  }, [performPaginatedSearch]);
+
+  // Memoized pagination component to prevent React DOM conflicts
+  const PaginationComponent = React.memo(() => {
+    if (!jobs || jobs.length === 0 || loading || error) return null;
+    if (totalResults <= jobsPerPage) return null;
+
+    return (
+      <DigiNavigationPagination 
+        afTotalPages={totalPages}
+        afInitActivePage={currentPage}
+        onAfOnPageChange={handlePageChange}
+      />
+    );
+  });
 
   // Error handling
   if (error) {
@@ -29,12 +104,7 @@ export const JobSearchPresentation = () => {
 
           <div className={!loading && jobs && jobs.length > 0 ? 'app-visible' : 'app-hidden'}>
             {jobs.map((job) => <JobCard key={job.id} job={job} />)}
-            {totalResults > 10 && (
-              <DigiNavigationPagination 
-                afTotalPages={Math.ceil(totalResults / 10)}
-                afInitActivePage={1} 
-              />
-            )}
+            <PaginationComponent />
           </div>
         </DigiLayoutContainer>
       </DigiTypography>
