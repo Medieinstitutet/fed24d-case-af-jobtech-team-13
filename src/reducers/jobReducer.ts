@@ -7,14 +7,18 @@ export interface IJobState {
   loading: boolean;
   error: string | null;
   totalResults: number;
+  currentPage: number;
+  jobsPerPage: number;
 }
 
 // Action types enum
 export enum JobActionTypes {
   SEARCH_START = 'SEARCH_START',
+  SEARCH_START_PAGINATION = 'SEARCH_START_PAGINATION',
   SEARCH_SUCCESS = 'SEARCH_SUCCESS', 
   SEARCH_ERROR = 'SEARCH_ERROR',
   SET_SEARCH_QUERY = 'SET_SEARCH_QUERY',
+  SET_PAGE = 'SET_PAGE',
   RESET_ERROR = 'RESET_ERROR'
 }
 
@@ -31,6 +35,8 @@ export const initialState: IJobState = {
   loading: false,
   error: null,
   totalResults: 0,
+  currentPage: 1,
+  jobsPerPage: 10,
 };
 
 export const jobReducer = (state: IJobState, action: JobActions) => {
@@ -44,6 +50,14 @@ export const jobReducer = (state: IJobState, action: JobActions) => {
         error: null,
         jobs: [],
         totalResults: 0,
+        currentPage: 1, // Reset to first page on new search
+      };
+
+    case JobActionTypes.SEARCH_START_PAGINATION:
+      return {
+        ...state,
+        loading: true,
+        error: null,
       };
 
     case JobActionTypes.SEARCH_SUCCESS: {
@@ -69,6 +83,12 @@ export const jobReducer = (state: IJobState, action: JobActions) => {
       return {
         ...state,
         searchQuery: action.payload,
+      };
+
+    case JobActionTypes.SET_PAGE:
+      return {
+        ...state,
+        currentPage: parseInt(action.payload),
       };
 
     case JobActionTypes.RESET_ERROR:
