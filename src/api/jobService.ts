@@ -5,9 +5,10 @@ import { transformApiJobToListItem, transformApiJobToDetail } from './transforme
 
 export interface JobSearchParams {
   q?: string; // search query
+  offset?: number; // for pagination, defaults to 0
+  limit?: number; // for pagination, defaults to 10
   /**
   position?: number;
-  limit?: number;  
   region?: string;
   municipality?: string;
   */
@@ -26,6 +27,8 @@ export class JobService {
       const response = await axios.get<ApiJobResponse>(this.baseUrl, {
         params: {
           q: params.q || '',
+          offset: params.offset || 0,
+          limit: params.limit || 10,
         },
       });
 
