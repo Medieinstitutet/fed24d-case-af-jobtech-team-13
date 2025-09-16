@@ -1,42 +1,41 @@
 import { useState } from 'react';
 import { useJobs } from '../contexts/JobContext';
 import { jobService } from '../api/jobService';
+import { FormInputSearchVariation, FormInputType } from '@digi/arbetsformedlingen';
 import { DigiFormInputSearch} from '@digi/arbetsformedlingen-react';
-import { 
-  FormInputType,
-  FormInputSearchVariation,
-} from '@digi/arbetsformedlingen';
+import { JobActionTypes } from '../reducers/jobReducer';
 
 export const SearchForm = () => {
-  const { 
-    searchQuery, 
-    setSearchQuery, 
-    setJobs, 
-    setLoading, 
-    setError, 
-    setTotalResults,
-  } = useJobs();
 
+  const { searchQuery, dispatch } = useJobs();
   const [inputValue, setInputValue] = useState(searchQuery);
-
+  
   const handleSearch = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    
-    setSearchQuery(inputValue);
-    setLoading(true);
-    setError(null);
-    
+
+    // Start search
+    dispatch({
+      type: JobActionTypes.SEARCH_START,
+      payload: inputValue
+    });
+
     try {
       const result = await jobService.searchJobs({ q: inputValue });
-      
-      setJobs(result.hits);
-      setTotalResults(result.total);
-      
+
+      dispatch({
+        type: JobActionTypes.SEARCH_SUCCESS,
+        payload: JSON.stringify({
+          jobs: result.hits,
+          total: result.total
+        })
+      });
     } catch (err) {
       console.error('Search error:', err);
-      setError('Något gick fel vid sökningen. Försök igen.');
-    } finally {
-      setLoading(false);
+
+      dispatch({
+        type: JobActionTypes.SEARCH_ERROR,
+        payload: 'Något gick fel vid sökningen. Försök igen.'
+      });
     }
   };
 
