@@ -12,6 +12,16 @@ export const JobSearchPresentation = () => {
   // Calculate total pages
   const totalPages = Math.ceil(Math.min(totalResults, 2000) / jobsPerPage);
 
+  // Utility function for visibility classes
+  const getVisibilityClass = (condition: boolean) => 
+    condition ? 'app-visible' : 'app-hidden';
+
+  // Pre-calculate visibility conditions
+  const showError = !!error;
+  const showLoading = loading;
+  const showContent = !loading && jobs && jobs.length > 0;
+  const showPagination = showContent && totalResults > jobsPerPage;
+
   // Function to perform search with pagination
   const performPaginatedSearch = useCallback(async (page: number) => {
     if (!page || typeof page !== 'number' || page < 1) {
@@ -69,8 +79,7 @@ export const JobSearchPresentation = () => {
 
   // Memoized pagination component to prevent React DOM conflicts
   const PaginationComponent = React.memo(() => {
-    if (!jobs || jobs.length === 0 || loading || error) return null;
-    if (totalResults <= jobsPerPage) return null;
+    if (!showContent || !showPagination) return null;
 
     return (
       <DigiNavigationPagination 
@@ -94,15 +103,15 @@ export const JobSearchPresentation = () => {
     <DigiLayoutBlock afVariation={LayoutBlockVariation.SECONDARY} afContainer={LayoutBlockContainer.STATIC}>
       <DigiTypography>
         <DigiLayoutContainer afNoGutter afVerticalPadding>
-          <div className={error ? 'app-visible' : 'app-hidden'}>
+          <div className={getVisibilityClass(showError)}>
             Fel: {error}
           </div>
 
-          <div className={`loading-alert ${loading ? 'app-visible' : 'app-hidden'}`}>
+          <div className={`loading-alert ${getVisibilityClass(showLoading)}`}>
             <DigiLoaderSpinner afSize={LoaderSpinnerSize.MEDIUM} afText="Laddar sökresultat" />
           </div>
 
-          <div className={!loading && jobs && jobs.length > 0 ? 'app-visible' : 'app-hidden'}>
+          <div className={getVisibilityClass(showContent)}>
             {jobs.map((job) => <JobCard key={job.id} job={job} />)}
             <PaginationComponent />
           </div>
