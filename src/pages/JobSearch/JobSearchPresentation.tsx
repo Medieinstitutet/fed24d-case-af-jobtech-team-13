@@ -118,7 +118,7 @@ export const JobSearchPresentation = () => {
           <div className={getVisibilityClass(showContent)}>
             {jobs.map((job) => <JobCard key={job.id} job={job} />)}
             <PaginationComponent />
-            {currentPage === totalPages && <small className='max-ad-info'>Nu har de 2000 första annonserna visats för denna sökning, vilket är maximalt antal möjligt. För att se fler annonser bör du ändra dina sökkriterier.</small> }
+            {currentPage === 200 && <small className='max-ad-info'>Nu har de 2000 första annonserna visats för denna sökning, vilket är maximalt antal möjligt. För att se fler annonser bör du ändra dina sökkriterier.</small> }
           </div>
         </DigiLayoutContainer>
       </DigiTypography>
