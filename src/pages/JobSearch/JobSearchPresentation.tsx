@@ -82,10 +82,14 @@ export const JobSearchPresentation = () => {
     if (!showContent || !showPagination) return null;
 
     return (
-      <DigiNavigationPagination 
+      <DigiNavigationPagination
         afTotalPages={totalPages}
         afInitActivePage={currentPage}
         onAfOnPageChange={handlePageChange}
+        afCurrentResultStart={currentPage === 1 ? currentPage : currentPage*10-9}
+	      afCurrentResultEnd={currentPage*10}
+	      afTotalResults={totalResults}
+	      afResultName="annonser"
       />
     );
   });
@@ -114,6 +118,7 @@ export const JobSearchPresentation = () => {
           <div className={getVisibilityClass(showContent)}>
             {jobs.map((job) => <JobCard key={job.id} job={job} />)}
             <PaginationComponent />
+            {currentPage === 200 && <small className='max-ad-info'>Nu har de 2000 första annonserna visats för denna sökning, vilket är maximalt antal möjligt. För att se fler annonser bör du ändra dina sökkriterier.</small> }
           </div>
         </DigiLayoutContainer>
       </DigiTypography>
