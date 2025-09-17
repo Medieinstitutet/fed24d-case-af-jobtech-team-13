@@ -87,7 +87,7 @@ export const JobSearchPresentation = () => {
         afInitActivePage={currentPage}
         onAfOnPageChange={handlePageChange}
         afCurrentResultStart={currentPage === 1 ? currentPage : currentPage*10-9}
-	      afCurrentResultEnd={currentPage*10}
+	      afCurrentResultEnd={currentPage*10-(10-jobs.length)}
 	      afTotalResults={totalResults}
 	      afResultName="annonser"
       />
