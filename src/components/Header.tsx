@@ -3,7 +3,7 @@ import headerLogo from '../assets/logo-blue-big.svg';
 import { 
   DigiNavigationSidebarButton,
   DigiLayoutMediaObject,
-  DigiLayoutContainer,
+  DigiToolsLanguagepicker,
   DigiMediaImage,
   DigiLayoutBlock
 } from '@digi/arbetsformedlingen-react';
@@ -34,65 +34,13 @@ export const Header = () => {
           <DigiNavigationSidebarButton 
             afText="Meny">
           </DigiNavigationSidebarButton>
+          <DigiToolsLanguagepicker
+          afLanguagepickerText="Språk"
+          afSignlangHide={true}
+          afLanguagepickerItems='[{"index":0,"type":"button","text":"العربية (Arabiska)","lang":"ar","value":"ar","dir":"rtl"},{"index":1,"type":"button","text":"دری (Dari)","lang":"prs","value":"prs","dir":"rtl"},{"index":2,"type":"button","text":"به پارسی (Persiska)","lang":"fa","value":"fa","dir":"rtl"},{"index":3,"type":"button","text":"English (Engelska)","lang":"en","value":"en","dir":"ltr"},{"index":4,"type":"button","text":"Русский (Ryska)","lang":"ru","value":"ru","dir":"ltr"},{"index":5,"type":"button","text":"Af soomaali (Somaliska)","lang":"so","value":"so","dir":"ltr"},{"index":6,"type":"button","text":"Svenska","lang":"sv","value":"sv","dir":"ltr"},{"index":7,"type":"button","text":"ትግርኛ (Tigrinska)","lang":"ti","value":"ti","dir":"ltr"}]'
+          />
         </div>
       </DigiLayoutBlock>
     </>
   );
 };
-
-
-
-
-
-/*
-    <DigiMediaImage
-      afUnlazy
-      afHeight="300"
-      afWidth="300"
-      afSrc='/assets/images/logo-blue-big.svg'
-      afAlt="JobbBankens logotyp"
-    >
-    </DigiMediaImage>
-
-        afSystemName="Designsystem"
-
-              afVariation={LayoutContainerVariation.FLUID}
-
-                    <DigiLayoutContainer afVerticalPadding slot="default">
-          <h1>JobbBanken</h1>
-        <DigiLayoutMediaObject
-          afAlignment={LayoutMediaObjectAlignment.START}>
-          <h1>JobbBanken</h1>
-          <DigiMediaImage slot="media"       
-            afUnlazy
-            afHeight="300"
-            afWidth="300"
-            afSrc='/assets/images/logo-blue-big.svg'
-            afAlt="JobbBankens logotyp"
-          >
-          </DigiMediaImage>
-            ...  
-        </DigiLayoutMediaObject>
-      </DigiLayoutContainer>
-
-
-
-      
-
-      <DigiLayoutBlock>
-<DigiLayoutMediaObject
-  >
-            <DigiMediaImage slot="media"       
-            afUnlazy
-            afHeight="44"
-            afWidth="44"
-            afSrc='/assets/images/logo-blue-big.svg'
-            afAlt="JobbBankens logotyp"
-          >
-  </DigiMediaImage>
-</DigiLayoutMediaObject>
-        <DigiTypography>
-        <h2>JobbBanken</h2>
-        </DigiTypography>
-      </DigiLayoutBlock>
-    */
