@@ -98,3 +98,9 @@ body {
 .app-visible {
   display: block;
 }
+
+.max-ad-info {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
