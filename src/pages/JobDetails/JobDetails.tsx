@@ -20,6 +20,7 @@ import {
   LinkButtonSize,
   LinkButtonVariation,
   UtilBreakpointObserverBreakpoints,
+  LayoutContainerVariation,
 } from "@digi/arbetsformedlingen";
 import { 
   DigiLayoutBlock, 
@@ -36,17 +37,20 @@ import {
   DigiTypographyMeta,
   DigiLinkButton,
   DigiUtilBreakpointObserver,
-  DigiLinkInternal
+  DigiLinkInternal,
+  DigiLayoutContainer
 } from "@digi/arbetsformedlingen-react";
 import { useLoaderData } from "react-router";
 import type { JobDetail } from "../../api/jobModels";
+import { StyledMediaImage } from "../../components/StyledMediaImage";
+import { LayoutMediaObjectAlignment } from "@designsystem-se/af";
 
 export const JobDetails = () => {
   const job = useLoaderData() as JobDetail;
   const [columnsVariation, setColumnsVariation] = useState(LayoutColumnsVariation.TWO);
 
-  // Vet inte hur jag ska komma förbi 'any' här ???
-  const handleBreakpointChange = (e: CustomEvent<any>) => {
+  
+  const handleBreakpointChange = (e: CustomEvent<any>) => { // Vet inte hur jag ska komma förbi 'any' här ???
     const bp = e.detail.value;
 
     if (bp === UtilBreakpointObserverBreakpoints.SMALL) {
@@ -76,6 +80,20 @@ export const JobDetails = () => {
 
   return (
     <>
+      {/* Tillbakalänk */}
+      <DigiLayoutBlock 
+        afVariation={LayoutBlockVariation.PRIMARY} 
+        afContainer={LayoutBlockContainer.STATIC}
+        afMarginTop
+      >
+        <DigiLinkInternal
+          afHref="/jobsearch"
+          hideVisitedColor
+        >
+          Gå tillbaka till sök
+        </DigiLinkInternal>
+      </DigiLayoutBlock>
+
       {/* Hero sektion med jobbtitel */}
       <DigiLayoutBlock 
         afVariation={LayoutBlockVariation.PRIMARY} 
@@ -87,19 +105,27 @@ export const JobDetails = () => {
           afLevel={TypographyHeadingJumboLevel.H1}
           afVariation={TypographyHeadingJumboVariation.PRIMARY}
         />
-        
-        <DigiLayoutMediaObject>
-          <div slot="media">
-            {job.logoUrl && (
-              <img 
-                src={job.logoUrl} 
-                alt={`${job.employer} logotyp`}
-                style={{ width: '80px', height: '80px', objectFit: 'contain' }}
-              />
-            )}
-          </div>
-          <div slot="content">
-            
+
+        <DigiLayoutMediaObject 
+          afAlignment={LayoutMediaObjectAlignment.STRETCH} 
+        >
+          {job.logoUrl && (
+            <StyledMediaImage
+              slot="media"
+              afUnlazy
+              afHeight="104"
+              afWidth="220"
+              afSrc={job.logoUrl}
+              afAlt={`${job.employer} logotyp`}
+              objectFit="scale-down"
+            >
+            </StyledMediaImage>
+          )}
+          
+          <DigiLayoutContainer
+            afVariation={LayoutContainerVariation.FLUID}
+            afNoGutter
+          >
             <DigiTypographyMeta afVariation={TypographyMetaVariation.PRIMARY}>
               <DigiTypographyTime 
                 afDateTime={job.publicationDate}
@@ -111,16 +137,19 @@ export const JobDetails = () => {
             </DigiTypographyMeta>
             
             {job.applicationUrl && (
-              <DigiLinkButton 
-                afHref={job.applicationUrl}
-                afVariation={LinkButtonVariation.PRIMARY} 
-                afSize={LinkButtonSize.LARGE}
-                afTarget="_blank"
-              >
-                Ansök nu
-              </DigiLinkButton>
+              <div style={{marginTop: 'auto', paddingTop: '1rem'}}>
+                <DigiLinkButton 
+                  // style={{marginTop: 'auto', paddingTop: '1rem'}}
+                  afHref={job.applicationUrl}
+                  afVariation={LinkButtonVariation.PRIMARY} 
+                  afSize={LinkButtonSize.MEDIUMLARGE}
+                  afTarget="_blank"
+                >
+                  Ansök nu
+                </DigiLinkButton>
+              </div>
             )}
-          </div>
+          </DigiLayoutContainer>
         </DigiLayoutMediaObject>
       </DigiLayoutBlock>
 
@@ -208,21 +237,6 @@ export const JobDetails = () => {
       </DigiLayoutBlock>
 
 
-      {/* Tillbakalänk */}
-      <DigiLayoutBlock 
-        afVariation={LayoutBlockVariation.PRIMARY} 
-        afContainer={LayoutBlockContainer.STATIC}
-        afMarginTop
-      >
-        <DigiLinkInternal
-          afHref="/jobsearch"
-          hideVisitedColor
-        >
-          Gå tillbaka till sök
-        </DigiLinkInternal>
-      </DigiLayoutBlock>
-
-
       {/* Jobbeskrivning */}
       <DigiLayoutBlock 
         afVariation={LayoutBlockVariation.PRIMARY} 
@@ -240,22 +254,9 @@ export const JobDetails = () => {
               {job.city && ` i ${job.city}`}
             </DigiTypographyPreamble>
             <div 
-              // style={{ maxWidth: '65ch', lineHeight: '1.6' }}
-              // dangerouslySetInnerHTML={{ __html: job.descriptionFormatted?.replace(/\r?\n/g, '<br />') }}
-              // dangerouslySetInnerHTML={{ __html: job.descriptionFormatted }}
               dangerouslySetInnerHTML={{ __html: decodeHtml(job.descriptionFormatted) }}
             />
           </DigiTypography>
-
-          {/* <div 
-            style={{ 
-              // maxWidth: '65ch', 
-              // lineHeight: '1.6',
-              fontFamily: 'var(--digi--global--typography--font-family--default)',
-              fontSize: 'var(--digi--global--typography--font-size--base)'
-            }}
-            dangerouslySetInnerHTML={{ __html: decodedHtml }} 
-          /> */}
           
           {job.applicationUrl && (
             <div slot="footer">
