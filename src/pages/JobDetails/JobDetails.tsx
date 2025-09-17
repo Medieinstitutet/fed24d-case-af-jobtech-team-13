@@ -21,6 +21,7 @@ import {
   LinkButtonVariation,
   UtilBreakpointObserverBreakpoints,
   LayoutContainerVariation,
+  LayoutMediaObjectAlignment
 } from "@digi/arbetsformedlingen";
 import { 
   DigiLayoutBlock, 
@@ -43,13 +44,12 @@ import {
 import { useLoaderData } from "react-router";
 import type { JobDetail } from "../../api/jobModels";
 import { StyledMediaImage } from "../../components/StyledMediaImage";
-import { LayoutMediaObjectAlignment } from "@designsystem-se/af";
+
 
 export const JobDetails = () => {
   const job = useLoaderData() as JobDetail;
   const [columnsVariation, setColumnsVariation] = useState(LayoutColumnsVariation.TWO);
 
-  
   const handleBreakpointChange = (e: CustomEvent<any>) => { // Vet inte hur jag ska komma förbi 'any' här ???
     const bp = e.detail.value;
 
@@ -67,17 +67,26 @@ export const JobDetails = () => {
     return diffDays <= 7;
   };
 
-  // Funktion för att tranformera HTML-text från API:et
-  function decodeHtml(html: string) {
-    // Tar bort inledande och avslutande citat-tecken
-    const cleanHtml = html.replace(/^"|"$/g, '');
 
-    // Dekodrar HTML
-    const txt = document.createElement("textarea");
-    txt.innerHTML = cleanHtml;
-    return txt.value;
+  function formatJobDescription(text: string): string {
+    // Tar bort citat-tecken
+    const cleanText = text.replace(/^"|"$/g, '');
+    
+    // Kontrollera om texten redan innehåller HTML-taggar
+    const hasHtmlTags = /<[^>]+>/.test(cleanText);
+    
+    if (hasHtmlTags) {
+      // Redan HTML - returnera som den är (eventuellt efter HTML-dekodning)
+      const txt = document.createElement("textarea");
+      txt.innerHTML = cleanText;
+      return txt.value;
+    } else {
+      // Ren text - konvertera radbrytningar till HTML
+      return cleanText.replace(/\n/g, '<br>');
+    }
   }
 
+  
   return (
     <>
       {/* Tillbakalänk */}
@@ -93,6 +102,7 @@ export const JobDetails = () => {
           Gå tillbaka till sök
         </DigiLinkInternal>
       </DigiLayoutBlock>
+
 
       {/* Hero sektion med jobbtitel */}
       <DigiLayoutBlock 
@@ -254,9 +264,10 @@ export const JobDetails = () => {
               {job.city && ` i ${job.city}`}
             </DigiTypographyPreamble>
             <div 
-              dangerouslySetInnerHTML={{ __html: decodeHtml(job.descriptionFormatted) }}
+              dangerouslySetInnerHTML={{ __html: formatJobDescription(job.descriptionFormatted) }}
             />
           </DigiTypography>
+
           
           {job.applicationUrl && (
             <div slot="footer">
@@ -264,7 +275,6 @@ export const JobDetails = () => {
                 afHref={job.applicationUrl}
                 afVariation={LinkButtonVariation.PRIMARY} 
                 afSize={LinkButtonSize.LARGE}
-                afFullwidth={true}
                 afTarget="_blank"
               >
                 Skicka ansökan
@@ -273,6 +283,7 @@ export const JobDetails = () => {
           )}
         </DigiCard>
       </DigiLayoutBlock>
+
 
       {/* Footer med metadata */}
       <DigiLayoutBlock 
