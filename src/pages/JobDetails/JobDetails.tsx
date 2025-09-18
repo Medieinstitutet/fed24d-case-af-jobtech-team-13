@@ -39,7 +39,8 @@ import {
   DigiLinkButton,
   DigiUtilBreakpointObserver,
   DigiLinkInternal,
-  DigiLayoutContainer
+  DigiLayoutContainer,
+  DigiMediaImage
 } from "@digi/arbetsformedlingen-react";
 import { useLoaderData } from "react-router";
 import type { JobDetail } from "../../api/jobModels";
@@ -67,24 +68,25 @@ export const JobDetails = () => {
     return diffDays <= 7;
   };
 
-
-  function formatJobDescription(text: string): string {
-    // Tar bort citat-tecken
-    const cleanText = text.replace(/^"|"$/g, '');
-    
-    // Kontrollera om texten redan innehåller HTML-taggar
-    const hasHtmlTags = /<[^>]+>/.test(cleanText);
-    
-    if (hasHtmlTags) {
-      // Redan HTML - returnera som den är (eventuellt efter HTML-dekodning)
-      const txt = document.createElement("textarea");
-      txt.innerHTML = cleanText;
-      return txt.value;
-    } else {
-      // Ren text - konvertera radbrytningar till HTML
-      return cleanText.replace(/\n/g, '<br>');
-    }
+  const formatJobDescription = (text: string): string => {
+  // Rensa bort eventuella citat-tecken från API
+  const cleanText = text.replace(/^"|"$/g, '');
+  
+  // Detektera om innehållet redan är HTML
+  const hasHtmlTags = /<[^>]+>/.test(cleanText);
+  
+  if (hasHtmlTags) {
+    // HTML-innehåll: dekoda HTML-entiteter
+    const txt = document.createElement("textarea");
+    txt.innerHTML = cleanText;
+    return txt.value;
+  } else {
+    // Ren text: konvertera radbrytningar till HTML
+    return cleanText.replace(/\n/g, '<br>');
   }
+}
+
+
 
   
   return (
@@ -275,6 +277,8 @@ export const JobDetails = () => {
                 afHref={job.applicationUrl}
                 afVariation={LinkButtonVariation.PRIMARY} 
                 afSize={LinkButtonSize.LARGE}
+                afFullwidth={false}
+                af-hide-icon={true}
                 afTarget="_blank"
               >
                 Skicka ansökan
