@@ -3,17 +3,21 @@ import {
   DigiLayoutBlock,
   DigiLayoutContainer,
   DigiLinkButton,
+  DigiInfoCardMultiContainer,
   //DigiLayoutMediaObject,
-  //DigiMediaImage
+  //DigiMediaImage,
+  DigiInfoCardMulti
 } from '@digi/arbetsformedlingen-react';
 
 import { 
 
   //LayoutMediaObjectAlignment,
+  InfoCardMultiHeadingLevel,
   TypographyVariation,
   LinkButtonSize,
   LinkButtonVariation,
-  LayoutBlockVariation
+  LayoutBlockVariation,
+  InfoCardMultiType
 } from '@digi/arbetsformedlingen';
 
 export const Home = () => {
@@ -26,10 +30,10 @@ export const Home = () => {
           Ditt nästa jobb, närmare än du tror
         </h2>
         </DigiTypography>
-
       </DigiLayoutBlock>
       <DigiLayoutBlock afVariation={LayoutBlockVariation.PRIMARY} af-margin-top af-margin-bottom af-vertical-padding>
-        <DigiTypography>
+                <DigiLayoutContainer afVerticalPadding>
+                  <DigiTypography>
         <h2>Vad är JobbBanken?</h2>
         <p>
           JobbBanken är en hemsida där vi lägger ut annonser från företag i alla branscher.
@@ -37,8 +41,10 @@ export const Home = () => {
           </p>
         <p>Ditt nästa jobb, närmare än du tror! </p>
         </DigiTypography>
+        </DigiLayoutContainer>
 
-        <div>
+        <DigiLayoutContainer afVerticalPadding>
+                  <div>
           <DigiLinkButton
             afHref="/jobsearch"
             afSize={LinkButtonSize.LARGE}
@@ -47,8 +53,50 @@ export const Home = () => {
             Sök jobb nu!
           </DigiLinkButton>
         </div>
+        </DigiLayoutContainer>
+
         <DigiLayoutContainer afVerticalPadding>
 
+        </DigiLayoutContainer>
+        <DigiLayoutContainer afVerticalPadding>
+<DigiInfoCardMultiContainer >
+	<DigiInfoCardMulti
+		afHeading="Arbetslös, vad händer nu?"
+		afHeadingLevel={InfoCardMultiHeadingLevel.H2}
+		afType={InfoCardMultiType.RELATED}
+		afLinkHref="/"
+>
+		<p>
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+			Suspendisse commodo egestas elit in consequat. Proin in ex
+			consectetur, laoreet augue sit amet, malesuada tellus.
+		</p>
+	</DigiInfoCardMulti>
+	<DigiInfoCardMulti
+		afHeading="CV, personligt brev och ansökan"
+		afHeadingLevel={InfoCardMultiHeadingLevel.H2}
+		afType={InfoCardMultiType.RELATED}
+		afLinkHref="/"
+>
+		<p>
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+			Suspendisse commodo egestas elit in consequat. Proin in ex
+			consectetur, laoreet augue sit amet, malesuada tellus.
+		</p>
+	</DigiInfoCardMulti>
+	<DigiInfoCardMulti
+		afHeading="Yrken och framtid"
+		afHeadingLevel={InfoCardMultiHeadingLevel.H2}
+		afType={InfoCardMultiType.RELATED}
+		afLinkHref="/"
+>
+		<p>
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+			Suspendisse commodo egestas elit in consequat. Proin in ex
+			consectetur, laoreet augue sit amet, malesuada tellus.
+		</p>
+	</DigiInfoCardMulti>
+</DigiInfoCardMultiContainer>
         </DigiLayoutContainer>
       </DigiLayoutBlock>
     </>
