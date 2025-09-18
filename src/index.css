@@ -15,8 +15,8 @@
   --color-cedar-800: #7A4F2F; /* leaf-600 */
   --color-cedar-600: #9B6B3F; /* leaf-500 */
   --color-cedar-400: #BC875F; /* leaf-400 */
-  --color-cedar-200: #DDB189; /* leaf-200 */ --color-cedar-100: #E5C199;
-  /* leaf-100 */
+  --color-cedar-200: #DDB189; /* leaf-200 */ 
+  --color-cedar-100: #E5C199; /* leaf-100 */
 
   /** Complementary Colors **/
 
@@ -97,4 +97,8 @@ body {
 
 .app-visible {
   display: block;
+}
+
+.footerLogoText {
+  color: #FFF;
 }
