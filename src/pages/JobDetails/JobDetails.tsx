@@ -21,6 +21,7 @@ import {
   LinkButtonVariation,
   UtilBreakpointObserverBreakpoints,
   LayoutContainerVariation,
+  LayoutMediaObjectAlignment
 } from "@digi/arbetsformedlingen";
 import { 
   DigiLayoutBlock, 
@@ -44,13 +45,12 @@ import {
 import { useLoaderData } from "react-router";
 import type { JobDetail } from "../../api/jobModels";
 import { StyledMediaImage } from "../../components/StyledMediaImage";
-import { LayoutMediaObjectAlignment } from "@designsystem-se/af";
+
 
 export const JobDetails = () => {
   const job = useLoaderData() as JobDetail;
   const [columnsVariation, setColumnsVariation] = useState(LayoutColumnsVariation.TWO);
 
-  
   const handleBreakpointChange = (e: CustomEvent<any>) => { // Vet inte hur jag ska komma förbi 'any' här ???
     const bp = e.detail.value;
 
@@ -88,6 +88,7 @@ export const JobDetails = () => {
 
 
 
+  
   return (
     <>
       {/* Tillbakalänk */}
@@ -103,6 +104,7 @@ export const JobDetails = () => {
           Gå tillbaka till sök
         </DigiLinkInternal>
       </DigiLayoutBlock>
+
 
       {/* Hero sektion med jobbtitel */}
       <DigiLayoutBlock 
@@ -267,6 +269,7 @@ export const JobDetails = () => {
               dangerouslySetInnerHTML={{ __html: formatJobDescription(job.descriptionFormatted) }}
             />
           </DigiTypography>
+
           
           {job.applicationUrl && (
             <div slot="footer">
@@ -284,6 +287,7 @@ export const JobDetails = () => {
           )}
         </DigiCard>
       </DigiLayoutBlock>
+
 
       {/* Footer med metadata */}
       <DigiLayoutBlock 
