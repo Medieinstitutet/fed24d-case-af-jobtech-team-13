@@ -38,7 +38,8 @@ import {
   DigiLinkButton,
   DigiUtilBreakpointObserver,
   DigiLinkInternal,
-  DigiLayoutContainer
+  DigiLayoutContainer,
+  DigiMediaImage
 } from "@digi/arbetsformedlingen-react";
 import { useLoaderData } from "react-router";
 import type { JobDetail } from "../../api/jobModels";
@@ -67,16 +68,25 @@ export const JobDetails = () => {
     return diffDays <= 7;
   };
 
-  // Funktion för att tranformera HTML-text från API:et
-  function decodeHtml(html: string) {
-    // Tar bort inledande och avslutande citat-tecken
-    const cleanHtml = html.replace(/^"|"$/g, '');
-
-    // Dekodrar HTML
+  const formatJobDescription = (text: string): string => {
+  // Rensa bort eventuella citat-tecken från API
+  const cleanText = text.replace(/^"|"$/g, '');
+  
+  // Detektera om innehållet redan är HTML
+  const hasHtmlTags = /<[^>]+>/.test(cleanText);
+  
+  if (hasHtmlTags) {
+    // HTML-innehåll: dekoda HTML-entiteter
     const txt = document.createElement("textarea");
-    txt.innerHTML = cleanHtml;
+    txt.innerHTML = cleanText;
     return txt.value;
+  } else {
+    // Ren text: konvertera radbrytningar till HTML
+    return cleanText.replace(/\n/g, '<br>');
   }
+}
+
+
 
   return (
     <>
@@ -254,7 +264,7 @@ export const JobDetails = () => {
               {job.city && ` i ${job.city}`}
             </DigiTypographyPreamble>
             <div 
-              dangerouslySetInnerHTML={{ __html: decodeHtml(job.descriptionFormatted) }}
+              dangerouslySetInnerHTML={{ __html: formatJobDescription(job.descriptionFormatted) }}
             />
           </DigiTypography>
           
@@ -264,7 +274,8 @@ export const JobDetails = () => {
                 afHref={job.applicationUrl}
                 afVariation={LinkButtonVariation.PRIMARY} 
                 afSize={LinkButtonSize.LARGE}
-                afFullwidth={true}
+                afFullwidth={false}
+                af-hide-icon={true}
                 afTarget="_blank"
               >
                 Skicka ansökan
