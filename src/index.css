@@ -90,3 +90,12 @@
 body {
   margin: 0;
 }
+
+.header {
+display: inline-flex;
+flex-wrap: wrap;
+}
+
+.digi-logo__img svg  {
+  display: none;
+}
