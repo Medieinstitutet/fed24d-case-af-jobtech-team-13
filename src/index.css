@@ -126,3 +126,9 @@ body {
   flex-direction: column;
   text-align: center;
 }
+
+.filters-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
