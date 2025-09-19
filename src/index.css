@@ -127,6 +127,28 @@ body {
   text-align: center;
 }
 
+.landing-pg-btns .digi-layout-container  {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.intro-text, .intro-text-paragraph {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  text-align: center;
+}
+
+.intro-text-paragraph {
+  padding-bottom: 2rem;
+}
+
+.title {
+  color: #E5C199;
+  text-align: center;
+}
+
 .filters-container {
   display: flex;
   gap: 1rem;
