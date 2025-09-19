@@ -96,6 +96,21 @@ display: inline-flex;
 flex-wrap: wrap;
 }
 
-.digi-logo__img svg  {
+.digi-logo__img svg {
   display: none;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  
+}
+
+.headerLogo {
+  padding-right: 0;
+  padding-left: 2rem;
+}
+
+.sc-digi-logo-h .digi-logo--small.sc-digi-logo { 
+  color: #1B4B5A;
 }

@@ -11,8 +11,8 @@ import {
   DigiTablist,
   DigiTablistPanel,
   */
- DigiLayoutMediaObject,
- DigiLayoutContainer,
+  DigiLayoutMediaObject,
+  DigiLayoutContainer,
   DigiMediaImage,
   DigiHeader,
 } from '@digi/arbetsformedlingen-react';
@@ -25,7 +25,7 @@ export const Header = () => {
   return (
     <>
 <div className="header">
-        <DigiLayoutContainer afVerticalPadding className="headerLogo">
+		        <DigiLayoutContainer afVerticalPadding afNoGutter className="headerLogo">
                   <DigiLayoutMediaObject afAlignment={LayoutMediaObjectAlignment.CENTER}
             >
               <DigiMediaImage slot="media"       
@@ -37,17 +37,15 @@ export const Header = () => {
               >
               </DigiMediaImage>
           </DigiLayoutMediaObject>
-        </DigiLayoutContainer>
-<DigiHeader
+
+        </DigiLayoutContainer> 
+          <DigiHeader
     afSystemName="JobbBanken"
     afHideSystemName={false}
     afMenuButtonText="Meny"
     className="header"
 >
 
-    <div slot="header-content">
-
-    </div>
 </DigiHeader>
 </div>
     </>
@@ -55,7 +53,20 @@ export const Header = () => {
 };
 
 /*
-		 
+		        <DigiLayoutContainer afVerticalPadding className="headerLogo">
+                  <DigiLayoutMediaObject afAlignment={LayoutMediaObjectAlignment.CENTER}
+            >
+              <DigiMediaImage slot="media"       
+              afUnlazy
+              afHeight="60"
+              afWidth="60"
+              afSrc={headerLogo}
+              afAlt="JobbBankens logotyp"
+              >
+              </DigiMediaImage>
+          </DigiLayoutMediaObject>
+
+        </DigiLayoutContainer> 
 
 
       <DigiLayoutBlock className="header">
