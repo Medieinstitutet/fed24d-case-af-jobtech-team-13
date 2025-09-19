@@ -15,8 +15,8 @@
   --color-cedar-800: #7A4F2F; /* leaf-600 */
   --color-cedar-600: #9B6B3F; /* leaf-500 */
   --color-cedar-400: #BC875F; /* leaf-400 */
-  --color-cedar-200: #DDB189; /* leaf-200 */ --color-cedar-100: #E5C199;
-  /* leaf-100 */
+  --color-cedar-200: #DDB189; /* leaf-200 */ 
+  --color-cedar-100: #E5C199; /* leaf-100 */
 
   /** Complementary Colors **/
 
@@ -91,11 +91,6 @@ body {
   margin: 0;
 }
 
-.header {
-display: inline-flex;
-flex-wrap: wrap;
-}
-
 .digi-logo__img svg {
   display: none;
 }
@@ -103,7 +98,6 @@ flex-wrap: wrap;
 .header {
   display: flex;
   flex-direction: row;
-  
 }
 
 .headerLogo {
@@ -113,4 +107,18 @@ flex-wrap: wrap;
 
 .sc-digi-logo-h .digi-logo--small.sc-digi-logo { 
   color: #1B4B5A;
+}
+
+.app-hidden {
+  display: none;
+}
+
+.app-visible {
+  display: block;
+}
+
+.max-ad-info {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
 }
