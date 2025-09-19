@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@designsystem-se/af": "^32.0.0",
+    "@designsystem-se/af-react": "^32.0.0",
     "@digi/arbetsformedlingen": "^31.3.0",
     "@digi/arbetsformedlingen-react": "^31.3.0",
     "axios": "^1.11.0",
