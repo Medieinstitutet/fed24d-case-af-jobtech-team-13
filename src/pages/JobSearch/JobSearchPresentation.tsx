@@ -7,7 +7,7 @@ import { JobActionTypes } from "../../reducers/jobReducer";
 import { jobService } from "../../api/jobService";
 
 export const JobSearchPresentation = () => {
-  const { jobs, totalResults, loading, error, currentPage, jobsPerPage, searchQuery, selectedMunicipality, dispatch } = useJobs();
+  const { jobs, totalResults, loading, error, currentPage, jobsPerPage, searchQuery, selectedMunicipalities, selectedOccupationGroups, dispatch } = useJobs();
 
   // Calculate total pages
   const totalPages = Math.ceil(Math.min(totalResults, 2000) / jobsPerPage);
@@ -48,7 +48,8 @@ export const JobSearchPresentation = () => {
         q: searchQuery,
         offset: offset,
         limit: jobsPerPage,
-        municipality: selectedMunicipality || undefined
+        municipalities: selectedMunicipalities && selectedMunicipalities.length > 0 ? selectedMunicipalities : undefined,
+        occupationGroups: selectedOccupationGroups && selectedOccupationGroups.length > 0 ? selectedOccupationGroups : undefined
       });
 
       dispatch({
@@ -65,7 +66,7 @@ export const JobSearchPresentation = () => {
         payload: 'Något gick fel vid sidnavigering. Försök igen.'
       });
     }
-  }, [dispatch, jobsPerPage, searchQuery, selectedMunicipality]);
+  }, [dispatch, jobsPerPage, searchQuery, selectedMunicipalities, selectedOccupationGroups]);
 
   // Handle page change
   const handlePageChange = useCallback((event: CustomEvent) => {
@@ -126,34 +127,3 @@ export const JobSearchPresentation = () => {
     </DigiLayoutBlock>
   );
 };
-
-
-// export const JobSearchPresentation = () => {
-//   const { jobs, totalResults, loading, error } = useJobs();
-
-//   if (loading) {
-//     return <div>Laddar...</div>;
-//   }
-
-//   if (error) {
-//     return <div>Fel: {error}</div>;
-//   }
-
-//   return (
-//     <div>
-//       {jobs && jobs.length > 0 ? (
-//         <div>
-//           {jobs.map((job) => (
-//             <div key={job.id} style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
-//               <h3>{job.title}</h3>
-//               <strong>{job.employer}</strong>
-//               {job.city !== 'Unknown' && <span> - {job.city}</span>}
-//             </div>
-//           ))}
-//         </div>
-//       ) : (
-//         <div>Inga jobb att visa</div>
-//       )}
-//     </div>
-//   );
-// };
