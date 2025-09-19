@@ -1,9 +1,10 @@
 import { createBrowserRouter } from "react-router";
 import { Layout } from "./pages/Layout/Layout";
 import { JobSearch } from "./pages/JobSearch/JobSearch";
-import { JobDetails } from "./pages/JobDetails";
+import { JobDetails } from "./pages/JobDetails/JobDetails";
 import { Home } from "./pages/Home";
 import { jobSearchLoader } from "./loaders/jobLoader";
+import { jobDetailsLoader } from "./loaders/jobDetailsLoader";
 
 // Add loaders
 
@@ -23,7 +24,8 @@ export const appRouter = createBrowserRouter([
       },
       {
         path: 'jobsearch/:id',
-        element: <JobDetails />
+        element: <JobDetails />,
+        loader: jobDetailsLoader
       }
     ]
   }

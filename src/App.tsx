@@ -6,7 +6,7 @@ import { appRouter } from "./Router";
 function App() {
   return <>
   <JobProvider>
-    <RouterProvider router={appRouter}></RouterProvider>;
+    <RouterProvider router={appRouter}></RouterProvider>
   </JobProvider>
   </>
 }

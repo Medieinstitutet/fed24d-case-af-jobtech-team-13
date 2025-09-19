@@ -102,3 +102,9 @@ body {
 .footerLogoText {
   color: #FFF;
 }
+
+.max-ad-info {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
