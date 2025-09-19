@@ -1,20 +1,37 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useJobs } from '../contexts/JobContext';
 import { jobService } from '../api/jobService';
 import { FormInputSearchVariation, FormInputType } from '@digi/arbetsformedlingen';
 import { DigiFormFilter, DigiFormInputSearch} from '@digi/arbetsformedlingen-react';
 import { JobActionTypes } from '../reducers/jobReducer';
 import { useSearchParams } from 'react-router';
-import { POPULAR_MUNICIPALITIES } from '../constants/filters';
+import { POPULAR_MUNICIPALITIES, POPULAR_OCCUPATION_GROUPS } from '../constants/filters';
+
+// Constants for timing and configuration
+const TIMING = {
+  FILTER_EVENT_DELAY: 10,
+  CHECKBOX_SYNC_DELAY: 100,
+  INITIAL_CHECKBOX_DELAYS: [200, 500, 1000],
+  SEARCH_DEBOUNCE_DELAY: 50
+} as const;
 
 export const SearchForm = () => {
 
-  const { searchQuery, dispatch, jobsPerPage, selectedMunicipality } = useJobs();
+  const { searchQuery, dispatch, jobsPerPage, selectedMunicipalities, selectedOccupationGroups } = useJobs();
   const [inputValue, setInputValue] = useState(searchQuery);
   const [searchParams, setSearchParams] = useSearchParams();
   
+  // Use ref for timeout to avoid re-render issues
+  const searchTimeoutRef = useRef<number | null>(null);
+  const hasInitializedRef = useRef(false);
+  
   // Function to perform search with a given query
-  const performSearchWithQuery = useCallback(async (inputValue: string, page: number = 1, municipalityOverride?: string) => {
+  const performSearchWithQuery = useCallback(async (
+    inputValue: string, 
+    page: number = 1, 
+    municipalitiesOverride?: string[],
+    occupationGroupsOverride?: string[]
+  ) => {
     // Start search
     dispatch({
       type: JobActionTypes.SEARCH_START,
@@ -23,13 +40,15 @@ export const SearchForm = () => {
 
     try {
       const offset = (page - 1) * jobsPerPage;
-      const municipalityToUse = municipalityOverride !== undefined ? municipalityOverride : selectedMunicipality;
+      const municipalitiesToUse = municipalitiesOverride !== undefined ? municipalitiesOverride : selectedMunicipalities;
+      const occupationGroupsToUse = occupationGroupsOverride !== undefined ? occupationGroupsOverride : selectedOccupationGroups;
       
       const result = await jobService.searchJobs({ 
         q: inputValue,
         offset: offset,
         limit: jobsPerPage,
-        municipality: municipalityToUse || undefined
+        municipalities: municipalitiesToUse && municipalitiesToUse.length > 0 ? municipalitiesToUse : undefined,
+        occupationGroups: occupationGroupsToUse && occupationGroupsToUse.length > 0 ? occupationGroupsToUse : undefined
       });
 
       dispatch({
@@ -47,48 +66,147 @@ export const SearchForm = () => {
         payload: 'Något gick fel vid sökningen. Försök igen.'
       });
     }
-  }, [dispatch, jobsPerPage, selectedMunicipality]);
+  }, [dispatch, jobsPerPage, selectedMunicipalities, selectedOccupationGroups]);
   
-  // Initialize search query and municipality from URL params on component mount
+  // Initialize state from URL params on component mount (without triggering searches)
   useEffect(() => {
     const urlQuery = searchParams.get('q');
-    const urlMunicipality = searchParams.get('municipality');
+    const urlMunicipalities = searchParams.getAll('municipality');
+    const urlOccupationGroups = searchParams.getAll('occupation-group');
     
-    if (urlQuery && !searchQuery) {
-      // Update context with URL query
+    // Only update state if it differs from current state to avoid unnecessary rerenders
+    if (urlQuery !== searchQuery) {
       dispatch({
         type: JobActionTypes.SET_SEARCH_QUERY,
-        payload: urlQuery
+        payload: urlQuery || ''
       });
-      setInputValue(urlQuery);
-    } else if (!urlQuery && searchQuery) {
-      // If no URL query but context has a search query, clear it
-      dispatch({
-        type: JobActionTypes.SET_SEARCH_QUERY,
-        payload: ''
-      });
-      setInputValue('');
+      setInputValue(urlQuery || '');
     }
 
-    if (urlMunicipality && !selectedMunicipality) {
-      // Update context with URL municipality
+    // Check if municipalities differ
+    const municipalitiesChanged = JSON.stringify(urlMunicipalities.sort()) !== JSON.stringify(selectedMunicipalities.sort());
+    if (municipalitiesChanged) {
       dispatch({
-        type: JobActionTypes.SET_MUNICIPALITY,
-        payload: urlMunicipality
-      });
-    } else if (!urlMunicipality && selectedMunicipality) {
-      // If no URL municipality but context has one, clear it
-      dispatch({
-        type: JobActionTypes.SET_MUNICIPALITY,
-        payload: ''
+        type: JobActionTypes.SET_MUNICIPALITIES,
+        payload: JSON.stringify(urlMunicipalities)
       });
     }
 
-    // Automatically perform search if we have URL params
-    if (urlQuery || urlMunicipality) {
-      performSearchWithQuery(urlQuery || '');
+    // Check if occupation groups differ
+    const occupationGroupsChanged = JSON.stringify(urlOccupationGroups.sort()) !== JSON.stringify(selectedOccupationGroups.sort());
+    if (occupationGroupsChanged) {
+      dispatch({
+        type: JobActionTypes.SET_OCCUPATION_GROUPS,
+        payload: JSON.stringify(urlOccupationGroups)
+      });
     }
-  }, [searchParams, searchQuery, selectedMunicipality, dispatch, performSearchWithQuery]);
+
+    // Only perform search on initial mount or when URL params exist but no search has been performed
+    const hasUrlParams = urlQuery || urlMunicipalities.length > 0 || urlOccupationGroups.length > 0;
+    const isInitialLoad = !hasInitializedRef.current;
+    
+    // Check if anything has changed that should trigger a search
+    const paramsChanged = isInitialLoad || urlQuery !== searchQuery || 
+        JSON.stringify(urlMunicipalities.sort()) !== JSON.stringify(selectedMunicipalities.sort()) ||
+        JSON.stringify(urlOccupationGroups.sort()) !== JSON.stringify(selectedOccupationGroups.sort());
+    
+    console.log('Search useEffect triggered:', {
+      hasUrlParams,
+      isInitialLoad,
+      paramsChanged,
+      urlQuery,
+      searchQuery,
+      urlMunicipalities,
+      selectedMunicipalities,
+      urlOccupationGroups,
+      selectedOccupationGroups
+    });
+    
+    if (paramsChanged) {
+      console.log('Triggering search with params:', { urlQuery, urlMunicipalities, urlOccupationGroups });
+      
+      // Mark as initialized
+      hasInitializedRef.current = true;
+      
+      // Clear any existing timeout
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+      
+      // Set a new timeout for the search
+      const newTimeoutId = setTimeout(() => {
+        performSearchWithQuery(urlQuery || '', 1, urlMunicipalities, urlOccupationGroups);
+        searchTimeoutRef.current = null;
+      }, TIMING.SEARCH_DEBOUNCE_DELAY);
+      
+      searchTimeoutRef.current = newTimeoutId;
+    }
+  }, [searchParams, dispatch, searchQuery, selectedMunicipalities, selectedOccupationGroups, performSearchWithQuery]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Sync visual checked state with selected items (for persistent visual state)
+  useEffect(() => {
+    // Update visual checkboxes to match selected state after component update
+    setTimeout(() => {
+      // Handle municipality checkboxes - both check and uncheck
+      const municipalityCheckboxes = document.querySelectorAll('.search-form digi-form-filter[data-filter-type="municipalities"] input[type="checkbox"]');
+      municipalityCheckboxes.forEach((checkbox: Element) => {
+        const inputElement = checkbox as HTMLInputElement;
+        const isSelected = selectedMunicipalities.includes(inputElement.value);
+        inputElement.checked = isSelected;
+      });
+      
+      // Handle occupation group checkboxes - both check and uncheck
+      const occupationGroupCheckboxes = document.querySelectorAll('.search-form digi-form-filter[data-filter-type="occupation-groups"] input[type="checkbox"]');
+      console.log('Occupation groups sync - found checkboxes:', occupationGroupCheckboxes.length);
+      console.log('Selected occupation groups from state:', selectedOccupationGroups);
+      
+      occupationGroupCheckboxes.forEach((checkbox: Element) => {
+        const inputElement = checkbox as HTMLInputElement;
+        const isSelected = selectedOccupationGroups.includes(inputElement.value);
+        console.log(`Occupation checkbox ${inputElement.value}: isSelected=${isSelected}, currentlyChecked=${inputElement.checked}`);
+        inputElement.checked = isSelected;
+      });
+    }, TIMING.CHECKBOX_SYNC_DELAY); // Small delay to ensure DOM is ready
+  }, [selectedMunicipalities, selectedOccupationGroups]);
+
+  // Set initial visual state on component mount
+  useEffect(() => {
+    const setInitialCheckboxState = () => {
+      // Get current selections from URL params since context might not be ready yet
+      const urlMunicipalities = searchParams.getAll('municipality');
+      const urlOccupationGroups = searchParams.getAll('occupation-group');
+      
+      // Handle municipality checkboxes - both check and uncheck based on URL
+      const municipalityCheckboxes = document.querySelectorAll('.search-form digi-form-filter[data-filter-type="municipalities"] input[type="checkbox"]');
+      municipalityCheckboxes.forEach((checkbox: Element) => {
+        const inputElement = checkbox as HTMLInputElement;
+        const isSelected = urlMunicipalities.includes(inputElement.value);
+        inputElement.checked = isSelected;
+      });
+      
+      // Handle occupation group checkboxes - both check and uncheck based on URL
+      const occupationGroupCheckboxes = document.querySelectorAll('.search-form digi-form-filter[data-filter-type="occupation-groups"] input[type="checkbox"]');
+      occupationGroupCheckboxes.forEach((checkbox: Element) => {
+        const inputElement = checkbox as HTMLInputElement;
+        const isSelected = urlOccupationGroups.includes(inputElement.value);
+        inputElement.checked = isSelected;
+      });
+    };
+
+    // Try multiple times with increasing delays to account for component render timing
+    setTimeout(setInitialCheckboxState, TIMING.INITIAL_CHECKBOX_DELAYS[0]);
+    setTimeout(setInitialCheckboxState, TIMING.INITIAL_CHECKBOX_DELAYS[1]);
+    setTimeout(setInitialCheckboxState, TIMING.INITIAL_CHECKBOX_DELAYS[2]);
+  }, [searchParams]); // Depend on searchParams to get URL state
   
   const handleSearch = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -99,19 +217,118 @@ export const SearchForm = () => {
       payload: inputValue
     });
 
-    // Update URL with search parameters
-    const urlParams: { [key: string]: string } = {};
+    // Update URL with search parameters - the useEffect will handle the API call
+    const urlParams = new URLSearchParams();
     if (inputValue.trim()) {
-      urlParams.q = inputValue;
+      urlParams.append('q', inputValue);
     }
-    if (selectedMunicipality) {
-      urlParams.municipality = selectedMunicipality;
+    if (selectedMunicipalities.length > 0) {
+      selectedMunicipalities.forEach(municipality => {
+        urlParams.append('municipality', municipality);
+      });
+    }
+    if (selectedOccupationGroups.length > 0) {
+      selectedOccupationGroups.forEach(group => {
+        urlParams.append('occupation-group', group);
+      });
     }
     
     setSearchParams(urlParams);
+    // Removed performSearchWithQuery call - let useEffect handle it
+  };
 
-    // Perform search using the shared function
-    await performSearchWithQuery(inputValue);
+  // Helper function to build URL parameters with specific values
+  const buildUrlParams = (query: string, municipalities: string[], occupationGroups: string[]) => {
+    const urlParams = new URLSearchParams();
+    if (query.trim()) {
+      urlParams.append('q', query);
+    }
+    municipalities.forEach(municipality => {
+      urlParams.append('municipality', municipality);
+    });
+    occupationGroups.forEach(group => {
+      urlParams.append('occupation-group', group);
+    });
+    return urlParams;
+  };
+
+  // Generic filter submit handler - only updates state and URL, lets useEffect handle search
+  const createFilterSubmitHandler = (
+    filterType: 'municipalities' | 'occupation-groups',
+    actionType: JobActionTypes,
+    getOtherFilterValues: () => string[]
+  ) => {
+    return (e: CustomEvent) => {
+      setTimeout(() => {
+        const selectedIds = e.detail?.checked || [];
+        console.log(`Filter submit for ${filterType}:`, { selectedIds, eventDetail: e.detail });
+        
+        // Update context
+        dispatch({
+          type: actionType,
+          payload: JSON.stringify(selectedIds)
+        });
+        
+        // Build URL based on filter type - the useEffect will handle the API call
+        if (filterType === 'municipalities') {
+          const urlParams = buildUrlParams(inputValue, selectedIds, getOtherFilterValues());
+          setSearchParams(urlParams);
+        } else {
+          const urlParams = buildUrlParams(inputValue, getOtherFilterValues(), selectedIds);
+          setSearchParams(urlParams);
+        }
+      }, TIMING.FILTER_EVENT_DELAY);
+    };
+  };
+
+  // Generic filter reset handler - only updates state and URL, lets useEffect handle search
+  const createFilterResetHandler = (
+    filterType: 'municipalities' | 'occupation-groups',
+    actionType: JobActionTypes,
+    getOtherFilterValues: () => string[]
+  ) => {
+    return () => {
+      setTimeout(() => {
+        console.log(`Reset handler triggered for ${filterType}`);
+        
+        // Clear checkboxes using data attribute - try multiple selectors
+        const filter = document.querySelector(`digi-form-filter[data-filter-type="${filterType}"]`) as Element;
+        console.log('Found filter element:', filter);
+        
+        if (filter) {
+          const checkboxes = filter.querySelectorAll('input[type="checkbox"]');
+          console.log(`Found ${checkboxes.length} checkboxes in ${filterType} filter`);
+          checkboxes.forEach((checkbox: Element) => {
+            const inputElement = checkbox as HTMLInputElement;
+            console.log(`Unchecking checkbox with value: ${inputElement.value}`);
+            inputElement.checked = false;
+          });
+        } else {
+          // Fallback: try different selector approaches
+          console.log(`Filter element not found, trying fallback selectors for ${filterType}`);
+          const allCheckboxes = document.querySelectorAll('.search-form input[type="checkbox"]');
+          console.log(`Found ${allCheckboxes.length} total checkboxes`);
+        }
+        
+        // Update context
+        dispatch({
+          type: actionType,
+          payload: JSON.stringify([])
+        });
+        
+        console.log(`About to update URL for ${filterType} reset`);
+        // Build URL based on filter type - the useEffect will handle the API call
+        if (filterType === 'municipalities') {
+          const urlParams = buildUrlParams(inputValue, [], getOtherFilterValues());
+          console.log('New URL params for municipality reset:', urlParams.toString());
+          setSearchParams(urlParams);
+        } else {
+          const urlParams = buildUrlParams(inputValue, getOtherFilterValues(), []);
+          console.log('New URL params for occupation group reset:', urlParams.toString());
+          setSearchParams(urlParams);
+        }
+      }, TIMING.FILTER_EVENT_DELAY);
+    };
   };
 
   return (
@@ -131,69 +348,43 @@ export const SearchForm = () => {
           onAfOnClick={() => handleSearch()}
         />
         
-        <DigiFormFilter
-          afFilterButtonText='Filtrera på ort'
-          afSubmitButtonText='Filtrera'
-          afResetButtonText='Återställ'
-          afListItems={POPULAR_MUNICIPALITIES}
-          onAfSubmitFilter={(e: CustomEvent) => {
-            console.log('onAfSubmitFilter triggered:', e.detail);
-            
-            // Use setTimeout to ensure the event data is properly available
-            setTimeout(() => {
-              const selectedIds = e.detail?.checked || [];
-              console.log('Selected IDs after timeout:', selectedIds);
-              const municipality = selectedIds.length > 0 ? selectedIds[0] : '';
-              
-              // Update context with selected municipality
-              dispatch({
-                type: JobActionTypes.SET_MUNICIPALITY,
-                payload: municipality
-              });
-              
-              // Update URL with municipality parameter
-              const urlParams: { [key: string]: string } = {};
-              if (inputValue.trim()) {
-                urlParams.q = inputValue;
-              }
-              if (municipality) {
-                urlParams.municipality = municipality;
-              }
-              setSearchParams(urlParams);
-              
-              // Perform search immediately with the new municipality value
-              performSearchWithQuery(inputValue, 1, municipality);
-            }, 10);
-          }}
-          onAfResetFilter={() => {
-            console.log('onAfResetFilter triggered');
-            
-            // Use setTimeout to ensure the reset action is properly processed
-            setTimeout(() => {
-              // Clear all checkboxes in the filter
-              const checkboxes = document.querySelectorAll('.search-form input[type="checkbox"]');
-              checkboxes.forEach((checkbox: Element) => {
-                const inputElement = checkbox as HTMLInputElement;
-                inputElement.checked = false;
-              });
-              
-              dispatch({
-                type: JobActionTypes.SET_MUNICIPALITY,
-                payload: ''
-              });
-              
-              // Update URL to remove municipality parameter
-              const urlParams: { [key: string]: string } = {};
-              if (inputValue.trim()) {
-                urlParams.q = inputValue;
-              }
-              setSearchParams(urlParams);
-              
-              // Perform search immediately without municipality filter
-              performSearchWithQuery(inputValue, 1, '');
-            }, 10);
-          }}
-        />
+        <div className="filters-container">
+          <DigiFormFilter
+            afFilterButtonText='Filtrera på ort'
+            afSubmitButtonText='Filtrera'
+            afResetButtonText='Återställ'
+            afListItems={POPULAR_MUNICIPALITIES}
+            data-filter-type="municipalities"
+            onAfSubmitFilter={createFilterSubmitHandler(
+              'municipalities',
+              JobActionTypes.SET_MUNICIPALITIES,
+              () => selectedOccupationGroups
+            )}
+            onAfResetFilter={createFilterResetHandler(
+              'municipalities',
+              JobActionTypes.SET_MUNICIPALITIES,
+              () => selectedOccupationGroups
+            )}
+          />
+
+          <DigiFormFilter
+            afFilterButtonText='Filtrera på yrkesgrupp'
+            afSubmitButtonText='Filtrera'
+            afResetButtonText='Återställ'
+            afListItems={POPULAR_OCCUPATION_GROUPS}
+            data-filter-type="occupation-groups"
+            onAfSubmitFilter={createFilterSubmitHandler(
+              'occupation-groups',
+              JobActionTypes.SET_OCCUPATION_GROUPS,
+              () => selectedMunicipalities
+            )}
+            onAfResetFilter={createFilterResetHandler(
+              'occupation-groups',
+              JobActionTypes.SET_OCCUPATION_GROUPS,
+              () => selectedMunicipalities
+            )}
+          />
+        </div>
       </div>
     </form>
   );
