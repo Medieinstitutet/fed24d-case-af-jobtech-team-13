@@ -7,7 +7,7 @@ import { JobActionTypes } from "../../reducers/jobReducer";
 import { jobService } from "../../api/jobService";
 
 export const JobSearchPresentation = () => {
-  const { jobs, totalResults, loading, error, currentPage, jobsPerPage, searchQuery, dispatch } = useJobs();
+  const { jobs, totalResults, loading, error, currentPage, jobsPerPage, searchQuery, selectedMunicipality, dispatch } = useJobs();
 
   // Calculate total pages
   const totalPages = Math.ceil(Math.min(totalResults, 2000) / jobsPerPage);
@@ -47,7 +47,8 @@ export const JobSearchPresentation = () => {
       const result = await jobService.searchJobs({ 
         q: searchQuery,
         offset: offset,
-        limit: jobsPerPage
+        limit: jobsPerPage,
+        municipality: selectedMunicipality || undefined
       });
 
       dispatch({
@@ -64,7 +65,7 @@ export const JobSearchPresentation = () => {
         payload: 'Något gick fel vid sidnavigering. Försök igen.'
       });
     }
-  }, [dispatch, jobsPerPage, searchQuery]);
+  }, [dispatch, jobsPerPage, searchQuery, selectedMunicipality]);
 
   // Handle page change
   const handlePageChange = useCallback((event: CustomEvent) => {
@@ -87,7 +88,7 @@ export const JobSearchPresentation = () => {
         afInitActivePage={currentPage}
         onAfOnPageChange={handlePageChange}
         afCurrentResultStart={currentPage === 1 ? currentPage : currentPage*10-9}
-	      afCurrentResultEnd={currentPage*10}
+	      afCurrentResultEnd={currentPage*10-(10-jobs.length)}
 	      afTotalResults={totalResults}
 	      afResultName="annonser"
       />

@@ -7,11 +7,7 @@ export interface JobSearchParams {
   q?: string; // search query
   offset?: number; // for pagination, defaults to 0
   limit?: number; // for pagination, defaults to 10
-  /**
-  position?: number;
-  region?: string;
-  municipality?: string;
-  */
+  municipality?: string; // municipality concept_id for filtering by city
 }
 
 export class JobService {
@@ -29,6 +25,7 @@ export class JobService {
           q: params.q || '',
           offset: params.offset || 0,
           limit: params.limit || 10,
+          ...(params.municipality && { municipality: params.municipality }),
         },
       });
 
