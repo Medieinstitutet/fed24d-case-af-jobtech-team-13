@@ -102,7 +102,6 @@ export const SearchForm = () => {
     }
 
     // Only perform search on initial mount or when URL params exist but no search has been performed
-    const hasUrlParams = urlQuery || urlMunicipalities.length > 0 || urlOccupationGroups.length > 0;
     const isInitialLoad = !hasInitializedRef.current;
     
     // Check if anything has changed that should trigger a search
@@ -110,21 +109,7 @@ export const SearchForm = () => {
         JSON.stringify(urlMunicipalities.sort()) !== JSON.stringify(selectedMunicipalities.sort()) ||
         JSON.stringify(urlOccupationGroups.sort()) !== JSON.stringify(selectedOccupationGroups.sort());
     
-    console.log('Search useEffect triggered:', {
-      hasUrlParams,
-      isInitialLoad,
-      paramsChanged,
-      urlQuery,
-      searchQuery,
-      urlMunicipalities,
-      selectedMunicipalities,
-      urlOccupationGroups,
-      selectedOccupationGroups
-    });
-    
     if (paramsChanged) {
-      console.log('Triggering search with params:', { urlQuery, urlMunicipalities, urlOccupationGroups });
-      
       // Mark as initialized
       hasInitializedRef.current = true;
       
@@ -166,13 +151,10 @@ export const SearchForm = () => {
       
       // Handle occupation group checkboxes - both check and uncheck
       const occupationGroupCheckboxes = document.querySelectorAll('.search-form digi-form-filter[data-filter-type="occupation-groups"] input[type="checkbox"]');
-      console.log('Occupation groups sync - found checkboxes:', occupationGroupCheckboxes.length);
-      console.log('Selected occupation groups from state:', selectedOccupationGroups);
       
       occupationGroupCheckboxes.forEach((checkbox: Element) => {
         const inputElement = checkbox as HTMLInputElement;
         const isSelected = selectedOccupationGroups.includes(inputElement.value);
-        console.log(`Occupation checkbox ${inputElement.value}: isSelected=${isSelected}, currentlyChecked=${inputElement.checked}`);
         inputElement.checked = isSelected;
       });
     }, TIMING.CHECKBOX_SYNC_DELAY); // Small delay to ensure DOM is ready
@@ -261,7 +243,6 @@ export const SearchForm = () => {
     return (e: CustomEvent) => {
       setTimeout(() => {
         const selectedIds = e.detail?.checked || [];
-        console.log(`Filter submit for ${filterType}:`, { selectedIds, eventDetail: e.detail });
         
         // Update context
         dispatch({
@@ -289,25 +270,17 @@ export const SearchForm = () => {
   ) => {
     return () => {
       setTimeout(() => {
-        console.log(`Reset handler triggered for ${filterType}`);
-        
         // Clear checkboxes using data attribute - try multiple selectors
         const filter = document.querySelector(`digi-form-filter[data-filter-type="${filterType}"]`) as Element;
-        console.log('Found filter element:', filter);
         
         if (filter) {
           const checkboxes = filter.querySelectorAll('input[type="checkbox"]');
-          console.log(`Found ${checkboxes.length} checkboxes in ${filterType} filter`);
           checkboxes.forEach((checkbox: Element) => {
             const inputElement = checkbox as HTMLInputElement;
-            console.log(`Unchecking checkbox with value: ${inputElement.value}`);
             inputElement.checked = false;
           });
         } else {
-          // Fallback: try different selector approaches
-          console.log(`Filter element not found, trying fallback selectors for ${filterType}`);
-          const allCheckboxes = document.querySelectorAll('.search-form input[type="checkbox"]');
-          console.log(`Found ${allCheckboxes.length} total checkboxes`);
+          // Fallback: try different selector approaches if needed
         }
         
         // Update context
@@ -316,15 +289,12 @@ export const SearchForm = () => {
           payload: JSON.stringify([])
         });
         
-        console.log(`About to update URL for ${filterType} reset`);
         // Build URL based on filter type - the useEffect will handle the API call
         if (filterType === 'municipalities') {
           const urlParams = buildUrlParams(inputValue, [], getOtherFilterValues());
-          console.log('New URL params for municipality reset:', urlParams.toString());
           setSearchParams(urlParams);
         } else {
           const urlParams = buildUrlParams(inputValue, getOtherFilterValues(), []);
-          console.log('New URL params for occupation group reset:', urlParams.toString());
           setSearchParams(urlParams);
         }
       }, TIMING.FILTER_EVENT_DELAY);
