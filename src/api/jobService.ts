@@ -7,7 +7,8 @@ export interface JobSearchParams {
   q?: string; // search query
   offset?: number; // for pagination, defaults to 0
   limit?: number; // for pagination, defaults to 10
-  municipality?: string; // municipality concept_id for filtering by city
+  municipalities?: string[]; // municipality concept_ids for filtering by cities
+  occupationGroups?: string[]; // occupation group IDs for filtering by job categories
 }
 
 export class JobService {
@@ -20,13 +21,28 @@ export class JobService {
     hits: JobListItem[];
   }> {
     try {
+      // Build request params
+      const requestParams = new URLSearchParams();
+      requestParams.append('q', params.q || '');
+      requestParams.append('offset', (params.offset || 0).toString());
+      requestParams.append('limit', (params.limit || 10).toString());
+
+      // Add municipality filters if provided
+      if (params.municipalities && params.municipalities.length > 0) {
+        params.municipalities.forEach(municipality => {
+          requestParams.append('municipality', municipality);
+        });
+      }
+
+      // Add multiple occupation-group filters if provided
+      if (params.occupationGroups && params.occupationGroups.length > 0) {
+        params.occupationGroups.forEach(group => {
+          requestParams.append('occupation-group', group);
+        });
+      }
+
       const response = await axios.get<ApiJobResponse>(this.baseUrl, {
-        params: {
-          q: params.q || '',
-          offset: params.offset || 0,
-          limit: params.limit || 10,
-          ...(params.municipality && { municipality: params.municipality }),
-        },
+        params: requestParams,
       });
 
       const hits = response.data.hits.map(transformApiJobToListItem);
