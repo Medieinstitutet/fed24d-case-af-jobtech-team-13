@@ -91,12 +91,34 @@ body {
   margin: 0;
 }
 
+.digi-logo__img svg {
+  display: none;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+}
+
+.headerLogo {
+  padding-right: 0;
+  padding-left: 2rem;
+}
+
+.sc-digi-logo-h .digi-logo--small.sc-digi-logo { 
+  color: #1B4B5A;
+}
+
 .app-hidden {
   display: none;
 }
 
 .app-visible {
   display: block;
+}
+
+.footerLogoText {
+  color: #FFF;
 }
 
 .max-ad-info {
@@ -109,7 +131,6 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-
 }
 
 .intro-text, .intro-text-paragraph {
@@ -126,4 +147,10 @@ body {
 .title {
   color: #E5C199;
   text-align: center;
+}
+
+.filters-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
 }

@@ -9,6 +9,8 @@ export interface IJobState {
   totalResults: number;
   currentPage: number;
   jobsPerPage: number;
+  selectedMunicipalities: string[];
+  selectedOccupationGroups: string[];
 }
 
 // Action types enum
@@ -19,6 +21,8 @@ export enum JobActionTypes {
   SEARCH_ERROR = 'SEARCH_ERROR',
   SET_SEARCH_QUERY = 'SET_SEARCH_QUERY',
   SET_PAGE = 'SET_PAGE',
+  SET_MUNICIPALITIES = 'SET_MUNICIPALITIES',
+  SET_OCCUPATION_GROUPS = 'SET_OCCUPATION_GROUPS',
   RESET_ERROR = 'RESET_ERROR'
 }
 
@@ -37,6 +41,8 @@ export const initialState: IJobState = {
   totalResults: 0,
   currentPage: 1,
   jobsPerPage: 10,
+  selectedMunicipalities: [],
+  selectedOccupationGroups: [],
 };
 
 export const jobReducer = (state: IJobState, action: JobActions) => {
@@ -89,6 +95,18 @@ export const jobReducer = (state: IJobState, action: JobActions) => {
       return {
         ...state,
         currentPage: parseInt(action.payload),
+      };
+
+    case JobActionTypes.SET_MUNICIPALITIES:
+      return {
+        ...state,
+        selectedMunicipalities: JSON.parse(action.payload),
+      };
+
+    case JobActionTypes.SET_OCCUPATION_GROUPS:
+      return {
+        ...state,
+        selectedOccupationGroups: JSON.parse(action.payload),
       };
 
     case JobActionTypes.RESET_ERROR:
