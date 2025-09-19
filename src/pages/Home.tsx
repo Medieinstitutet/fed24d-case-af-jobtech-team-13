@@ -24,7 +24,7 @@ export const Home = () => {
   return (
     <>
       <DigiLayoutBlock afVariation={LayoutBlockVariation.PROFILE} af-vertical-padding>
-        <DigiTypography afVariation={TypographyVariation.LARGE}>
+        <DigiTypography afVariation={TypographyVariation.LARGE} className="title">
         <h1>JobbBanken</h1>
         <h2>
           Ditt nästa jobb, närmare än du tror
@@ -33,9 +33,11 @@ export const Home = () => {
       </DigiLayoutBlock>
       <DigiLayoutBlock afVariation={LayoutBlockVariation.PRIMARY} af-margin-top af-margin-bottom af-vertical-padding>
                 <DigiLayoutContainer afVerticalPadding>
-                  <DigiTypography>
+                  <DigiTypography className="intro-text">
         <h2>Vad är JobbBanken?</h2>
-        <p>
+        </DigiTypography>
+        <DigiTypography className="intro-text-paragraph">
+                  <p>
           JobbBanken är en hemsida där vi lägger ut annonser från företag i alla branscher.
           Vi ger dig möjligheten att söka efter det yrke som passar dig, där du är nu!
           </p>
@@ -43,16 +45,33 @@ export const Home = () => {
         </DigiTypography>
         </DigiLayoutContainer>
 
-        <DigiLayoutContainer afVerticalPadding>
-                  <div>
+        <DigiLayoutContainer afVerticalPadding className="landing-pg-btns">
+
           <DigiLinkButton
+            className="about-us-btn"
+            afHref="#"
+            afSize={LinkButtonSize.LARGE}
+            afVariation={LinkButtonVariation.PRIMARY}
+            >
+            Om oss
+          </DigiLinkButton>
+          <DigiLinkButton
+            className="jobsearch-btn"
             afHref="/jobsearch"
             afSize={LinkButtonSize.LARGE}
             afVariation={LinkButtonVariation.PRIMARY}
             >
             Sök jobb nu!
           </DigiLinkButton>
-        </div>
+          <DigiLinkButton
+            className="contact-btn"
+            afHref="#"
+            afSize={LinkButtonSize.LARGE}
+            afVariation={LinkButtonVariation.PRIMARY}
+            >
+            Kontakt
+          </DigiLinkButton>
+        
         </DigiLayoutContainer>
 
         <DigiLayoutContainer afVerticalPadding>
